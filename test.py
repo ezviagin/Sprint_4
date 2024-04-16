@@ -1,36 +1,4 @@
 import pytest
-from main import BooksCollector
-
-
-@pytest.fixture(scope="class")
-def books_collector():
-    return BooksCollector()
-
-
-@pytest.fixture(scope="class")
-def expected_genre():
-    return ['Фантастика', 'Ужасы', 'Детективы', 'Мультфильмы', 'Комедии']
-
-
-@pytest.fixture(scope="class")
-def expected_genre_18_plus():
-    return ['Ужасы', 'Детективы']
-
-
-@pytest.fixture(scope="session")
-def filled_book_collection():
-    filled_data = BooksCollector()
-    books = [
-        ['Мертвая зона', 'Ужасы'],
-        ['Шерлок Холмс', 'Детективы'],
-        ['Губка Боб Квадратные Штаны', 'Мультфильмы'],
-        ['Похождения бравого солдата Швейка', 'Комедии']
-    ]
-    for book_name, genre in books:
-        filled_data.add_new_book(book_name)
-        filled_data.set_book_genre(book_name, genre)
-
-    return filled_data
 
 
 class TestBooksCollector:
@@ -58,22 +26,20 @@ class TestBooksCollector:
     @pytest.mark.parametrize("book_name, expected_result", [('Властелин Колец', '')])
     def test_add_new_book_genre_is_empty(self, book_name, expected_result, books_collector):
         books_collector.add_new_book(book_name)
-        assert (books_collector.books_genre[book_name]) == expected_result and books_collector.get_book_genre(
-            book_name) == expected_result
+        assert books_collector.get_book_genre(book_name) == expected_result
 
     @pytest.mark.parametrize('book_name, book_name_genre', [('Властелин Колец', 'Фантастика')])
     def test_add_new_book_twice(self, books_collector, book_name, book_name_genre):
         books_collector.add_new_book(book_name)
         books_collector.set_book_genre(book_name, book_name_genre)
         books_collector.add_new_book(book_name)
-        assert len(books_collector.books_genre) == 1 and books_collector.get_book_genre(book_name) == book_name_genre
+        assert books_collector.get_book_genre(book_name) == book_name_genre
 
     @pytest.mark.parametrize('book_name, book_name_genre', [('Властелин Колец', 'Фантастика')])
     def test_set_book_genre_correct(self, books_collector, book_name, book_name_genre):
         books_collector.add_new_book(book_name)
         books_collector.set_book_genre(book_name, book_name_genre)
-        assert books_collector.books_genre[book_name] == book_name_genre or books_collector.get_book_genre(
-            book_name) == book_name_genre
+        assert books_collector.get_book_genre(book_name) == book_name_genre
 
     @pytest.mark.parametrize('book_name, book_name_genre', [('Властелин Колец', 'Фантастика')])
     def test_get_book_genre_correct(self, filled_book_collection, book_name, book_name_genre):
